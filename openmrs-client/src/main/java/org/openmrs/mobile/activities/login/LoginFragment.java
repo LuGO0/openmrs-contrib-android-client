@@ -254,6 +254,8 @@ public class LoginFragment extends ACBaseFragment<LoginContract.Presenter> imple
 
     public void forgotPassword() {
         startActivity(new Intent(getContext(), ContactUsActivity.class));
+    }
+    
     @Override
     public void showForgotPasswordDialog() {
         View view = getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
