@@ -17,6 +17,7 @@ package org.openmrs.mobile.activities.login;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.res.Resources;
 import androidx.annotation.NonNull;
 import org.mindrot.jbcrypt.BCrypt;
 import org.openmrs.mobile.R;
@@ -86,6 +87,26 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Prese
     @Override
     public void subscribe() {
         // This method is intentionally empty
+    }
+
+    @Override
+    public void resetPassword(final String email) {
+        restApi.resetPassword(email).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    String message = new StringBuilder().append(Resources.getSystem().getString(R.string.check_your_email_id)).append(email).toString();
+                    ToastUtil.success(message);
+                } else {
+                    ToastUtil.error(Resources.getSystem().getString(R.string.error_message));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                ToastUtil.error(t.getMessage());
+            }
+        });
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.openmrs.mobile.activities.login;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -170,7 +171,7 @@ public class LoginFragment extends ACBaseFragment<LoginContract.Presenter> imple
                 mUrl.getText().toString(),
                 initialUrl));
 
-        mForgotPass.setOnClickListener(view -> forgotPassword());
+        mForgotPass.setOnClickListener(view -> showForgotPasswordDialog());
 
         mAboutUsTextView.setOnClickListener(view -> openAboutPage());
     }
@@ -253,6 +254,24 @@ public class LoginFragment extends ACBaseFragment<LoginContract.Presenter> imple
 
     public void forgotPassword() {
         startActivity(new Intent(getContext(), ContactUsActivity.class));
+    @Override
+    public void showForgotPasswordDialog() {
+        View view = getLayoutInflater().inflate(R.layout.alert_dialog_text_input_layout,null);
+        TextInputEditText emailTextField = view.findViewById(R.id.ForgotPasswordDialogTextField);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.forgot_dialog_title));
+        builder.setView(view);
+        builder.setPositiveButton(getString(R.string.forgot_password_dialog_positive_button), (dialog, which) -> {
+            if(emailTextField.getText() != null && emailTextField.getText().length() > 0) {
+                mPresenter.resetPassword(emailTextField.getText().toString());
+            } else {
+                ToastUtil.error(getString(R.string.email_text_field_empty_message));
+            }
+        }).setNegativeButton(R.string.dialog_button_cancel,((dialog, which) -> {
+            dialog.cancel();
+        }));
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override
